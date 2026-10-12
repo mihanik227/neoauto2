@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeoAuto — Премиальные электромобили</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+    background: #000000; color: #f5f5f7; min-height: 100vh; overflow-x: hidden;
+  }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .header-inner { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; }
+  .logo { font-size: 20px; font-weight: 700; color: #f5f5f7; text-decoration: none; }
+  .logo span { background: linear-gradient(135deg, #2997ff, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+  .hero {
+    position: relative; min-height: 90vh; display: flex; align-items: center; justify-content: center;
+    text-align: center; padding: 80px 24px; background: #000;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background-image: url('https://unsplash.com');
+    background-size: cover; background-position: center; filter: brightness(0.3); z-index: 0;
+  }
+  .hero-content { position: relative; z-index: 2; max-width: 900px; }
+  .hero h1 {
+    font-size: clamp(36px, 6vw, 72px); font-weight: 700; letter-spacing: -2px; line-height: 1.05; margin-bottom: 24px;
+    background: linear-gradient(180deg, #ffffff 0%, #86868b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero p { font-size: clamp(16px, 2vw, 20px); color: #a1a1a6; margin-bottom: 40px; }
+  .btn-hero {
+    display: inline-block; padding: 18px 44px; font-size: 17px; font-weight: 600; color: #fff;
+    text-decoration: none; border-radius: 16px; background: linear-gradient(135deg, #2997ff 0%, #0071e3 100%);
+    box-shadow: 0 15px 30px rgba(41, 151, 255, 0.4); transition: transform 0.2s; cursor: pointer; border: none;
+  }
+  .btn-hero:hover { transform: scale(1.03); }
+
+  .quiz-section { padding: 100px 0; background: radial-gradient(ellipse at top, rgba(41, 151, 255, 0.1) 0%, transparent 60%); }
+  .quiz-box {
+    max-width: 600px; margin: 0 auto; background: #1d1d1f; border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px; padding: 40px; box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+  }
+  .quiz-step { display: none; }
+  .quiz-step.active { display: block; }
+  .quiz-step-title { font-size: 24px; font-weight: 700; margin-bottom: 24px; text-align: center; color: #fff; }
+  .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+  
+  .quiz-option {
+    padding: 20px; font-size: 16px; font-weight: 600; color: #f5f5f7; background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; cursor: pointer; text-align: center; font-family: inherit;
+  }
+  .quiz-option:hover { background: rgba(41, 151, 255, 0.1); border-color: #2997ff; }
+  
+  .form-group { margin-bottom: 16px; }
+  input {
+    width: 100%; padding: 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px; color: #fff; font-size: 16px; outline: none;
+  }
+  input:focus { border-color: #2997ff; }
+  
+  .btn-submit {
+    width: 100%; padding: 16px; background: linear-gradient(135deg, #2997ff, #a78bfa);
+    color: #fff; font-size: 16px; font-weight: 600; border: none; border-radius: 12px; cursor: pointer; font-family: inherit;
+  }
+
+  .result-box { display: none; text-align: center; padding: 20px; }
+  .result-box h3 { font-size: 28px; margin-bottom: 16px; color: #2997ff; }
+  .result-box p { color: #a1a1a6; font-size: 16px; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container header-inner">
+    <a href="#" class="logo"> Neo<span>Auto</span></a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <h1>Будущее уже в Беларуси.<br>Электромобили под ключ.</h1>
+    <p>Пройдите опрос за 1 минуту, узнайте стоимость доставки в Минск и получите персональную подборку авто.</p>
+    <button class="btn-hero" onclick="scrollToQuiz()">Подобрать авто за 1 минуту</button>
+  </div>
+</section>
+
+<section class="quiz-section" id="quiz">
+  <div class="container">
+    <div class="quiz-box">
+      
+      <!-- ШАГ 1: БРЕНД -->
+      <div class="quiz-step active" id="step1">
+        <div class="quiz-step-title">Какой бренд вас интересует?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="nextStep(1, 'brand', 'Zeekr')">Zeekr</button>
+          <button class="quiz-option" onclick="nextStep(1, 'brand', 'BYD')">BYD</button>
+          <button class="quiz-option" onclick="nextStep(1, 'brand', 'Xiaomi SU7')">Xiaomi SU7</button>
+          <button class="quiz-option" onclick="nextStep(1, 'brand', 'LiAuto')">LiAuto</button>
+        </div>
+      </div>
+
+      <!-- ШАГ 2: БЮДЖЕТ -->
+      <div class="quiz-step" id="step2">
+        <div class="quiz-step-title">Укажите ваш планируемый бюджет</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="nextStep(2, 'budget', 'До 30000 USD')">До 30000 USD</button>
+          <button class="quiz-option" onclick="nextStep(2, 'budget', '30000 - 50000 USD')">30000 - 50000 USD</button>
+          <button class="quiz-option" onclick="nextStep(2, 'budget', 'Более 50000 USD')">Более 50000 USD</button>
+        </div>
+      </div>
+
+      <!-- ШАГ 3: КОНТАКТЫ -->
+      <div class="quiz-step" id="step3">
+        <div class="quiz-step-title">Куда прислать расчет и варианты авто?</div>
+        <div class="form-group">
+          <input type="text" id="userName" placeholder="Ваше имя">
+        </div>
+        <div class="form-group">
+          <input type="tel" id="userPhone" placeholder="+375 (XX) XXX-XX-XX">
+        </div>
+        <button class="btn-submit" onclick="finishQuiz()">Получить расчет под ключ</button>
+      </div>
+
+      <!-- ФИНАЛЬНЫЙ ЧЕК/РЕЗУЛЬТАТ -->
+      <div class="result-box" id="result">
+        <h3>🔥 Заявка принята!</h3>
+        <p id="resultText"></p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  let answers = { brand: '', budget: '' };
+
+  function scrollToQuiz() {
+    document.getElementById('quiz').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function nextStep(currentStep, key, value) {
+    answers[key] = value;
+    document.getElementById('step' + currentStep).classList.remove('active');
+    document.getElementById('step' + (currentStep + 1)).classList.add('active');
+  }
+
+  function finishQuiz() {
+    const name = document.getElementById('userName').value.trim();
+    const phone = document.getElementById('userPhone').value.trim();
+
+    if (!name || !phone) {
+      alert('Пожалуйста, заполните имя и телефон для получения расчета!');
+      return;
+    }
+
+    document.getElementById('step3').classList.remove('active');
+    document.getElementById('result').style.display = 'block';
+    
+    document.getElementById('resultText').innerHTML = 
+      'Спасибо, <b>' + name + '</b>!<br><br>' +
+      'Мы начали подбор автомобиля марки <b>' + answers.brand + '</b> под ваш бюджет <b>' + answers.budget + '</b>.<br>' +
+      'В течение 15 минут наш менеджер свяжется с вами по номеру <b>' + phone + '</b> и выставит расчет.';
+  }
+</script>
+
+</body>
+</html>
